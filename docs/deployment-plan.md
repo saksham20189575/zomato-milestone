@@ -165,13 +165,15 @@ Check **Deploy logs** if `status` is `degraded` (parquet missing or path wrong).
 
 ### 2.2 Framework settings
 
-Vercel should auto-detect **Next.js**. The repo includes **`frontend/vercel.json`**:
+Vercel should auto-detect **Next.js**. The repo includes **`frontend/vercel.json`** and **`frontend/.npmrc`** (public npm registry):
 
 | Setting | Value |
 |---------|--------|
 | **Framework Preset** | Next.js |
 | **Build Command** | `npm run build` |
-| **Install Command** | `npm install` |
+| **Install Command** | `npm ci` |
+
+> **Note:** `package-lock.json` must use `registry.npmjs.org` URLs. Lockfiles generated against a corporate registry (e.g. Intuit Artifactory) will fail on Vercel with `npm install` errors.
 
 ### 2.3 Vercel environment variables
 
@@ -290,6 +292,7 @@ See [`.env.example`](../.env.example) for local development.
 | 502 on recommendations | Groq key missing/invalid | Set `LLM_API_KEY` on Railway |
 | `ModuleNotFoundError: app` | Wrong start command | Use `PYTHONPATH=src uvicorn api.main:app ...` |
 | Vercel build fails | Wrong root directory | Set root to `frontend` |
+| `npm install` / Exit handler never called | Lockfile points to private registry | Regenerate lockfile with `frontend/.npmrc`; commit updated `package-lock.json` |
 | Works locally, fails in prod | Secrets only in local `.env` | Copy vars to Railway + Vercel |
 
 ---
