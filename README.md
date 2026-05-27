@@ -155,7 +155,7 @@ PYTHONPATH=src pytest tests/ -v -m integration
 
 | Service | Platform | Config |
 |---------|----------|--------|
-| **API** | [Railway](https://railway.com) | `railway.toml` + `requirements-api.txt` |
+| **API** | [Railway](https://railway.com) | `railway.toml` + `Dockerfile` |
 | **UI** | [Vercel](https://vercel.com) | Root directory `frontend`, `frontend/vercel.json` |
 
 1. Push repo with `data/processed/restaurants.parquet` committed.

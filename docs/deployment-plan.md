@@ -97,21 +97,20 @@ Frontend calls the API via `NEXT_PUBLIC_API_URL` (see `frontend/src/lib/api.ts`)
 
 ### 1.2 Build & start commands
 
-The repo includes **`railway.toml`** (config-as-code) and **`scripts/start-api.sh`**:
+The repo includes **`railway.toml`** (Docker build) and **`Dockerfile`**:
 
 | File | Purpose |
 |------|---------|
-| `railway.toml` | `pip install -r requirements-api.txt`, health check, start command |
+| `railway.toml` | `builder = "DOCKERFILE"`, health check `/api/v1/health` |
+| `Dockerfile` | Python 3.11 image, `requirements-api.txt`, uvicorn via `scripts/start-api.sh` |
 | `scripts/start-api.sh` | `PYTHONPATH=src uvicorn api.main:app --host 0.0.0.0 --port $PORT` |
 | `requirements-api.txt` | Core + FastAPI deps (no Streamlit / Hugging Face `datasets`) |
 
-Override in the Railway UI only if needed:
+Railway only accepts `RAILPACK` or `DOCKERFILE` as builders — this project uses **DOCKERFILE** (not `NIXPACKS`).
 
 | Setting | Value |
 |---------|--------|
 | **Root directory** | `/` (repository root) |
-
-Alternatively use `pip install -r requirements-dev.txt` for build (includes `datasets`; not needed if parquet is in the repo).
 
 ### 1.3 Railway environment variables
 
@@ -307,28 +306,14 @@ See [`.env.example`](../.env.example) for local development.
 
 ---
 
-## Optional: Dockerfile for Railway
+## Dockerfile reference
 
-If you prefer a container over Nixpacks:
+The root `Dockerfile` is used automatically via `railway.toml`. To build locally:
 
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-COPY requirements-api.txt .
-RUN pip install --no-cache-dir -r requirements-api.txt
-
-COPY api/ api/
-COPY src/ src/
-COPY data/processed/restaurants.parquet data/processed/
-
-ENV PYTHONPATH=src
-ENV DATA_PATH=data/processed/restaurants.parquet
-
-CMD uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}
+```bash
+docker build -t tastetrail-api .
+docker run -p 8000:8000 -e LLM_API_KEY="gsk_..." -e PORT=8000 tastetrail-api
 ```
-
-In Railway: **Settings → Deploy → Dockerfile path** = `Dockerfile` (if added at repo root).
 
 ---
 

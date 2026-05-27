@@ -1,10 +1,9 @@
-# Railway deploy config — https://docs.railway.com/reference/config-as-code
+# Railway deploy — https://docs.railway.com/config-as-code/reference
 [build]
-builder = "NIXPACKS"
-buildCommand = "pip install -r requirements-api.txt"
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "bash scripts/start-api.sh"
 healthcheckPath = "/api/v1/health"
 healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
