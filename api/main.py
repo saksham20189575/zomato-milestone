@@ -30,6 +30,7 @@ from api.schemas import (
     RecommendationResponseOut,
     RestaurantOut,
 )
+from app.config import settings
 from app.data.repository import DataStoreError, get_repository
 from app.models.preferences import UserPreferences
 from app.models.recommendation import RecommendationResponse
@@ -64,25 +65,42 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+_cors_kwargs: dict = {
+    "allow_credentials": True,
+    "allow_methods": ["*"],
+    "allow_headers": ["*"],
+}
+if settings.cors_exact_origins:
+    _cors_kwargs["allow_origins"] = settings.cors_exact_origins
+if settings.cors_origin_regex:
+    _cors_kwargs["allow_origin_regex"] = settings.cors_origin_regex
+app.add_middleware(CORSMiddleware, **_cors_kwargs)
+
+
+@app.get("/")
+def root() -> dict[str, str]:
+    return {
+        "service": "TasteTrail AI API",
+        "docs": "/docs",
+        "health": "/api/v1/health",
+    }
 
 
 @app.get("/api/v1/health")
-def health() -> dict[str, str]:
+def health() -> dict[str, str | bool]:
     try:
         repo = get_repository()
-        return {"status": "ok", "restaurants_loaded": str(repo.count)}
+        return {
+            "status": "ok",
+            "restaurants_loaded": str(repo.count),
+            "llm_configured": settings.has_llm_api_key,
+        }
     except DataStoreError:
-        return {"status": "degraded", "restaurants_loaded": "0"}
+        return {
+            "status": "degraded",
+            "restaurants_loaded": "0",
+            "llm_configured": settings.has_llm_api_key,
+        }
 
 
 @app.get("/api/v1/metadata/locations", response_model=LocationsResponse)
@@ -137,6 +155,12 @@ def create_recommendations(body: RecommendationRequest) -> RecommendationRespons
         )
     except (ValidationError, KeyError) as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
+
+    if not settings.has_llm_api_key:
+        raise HTTPException(
+            status_code=503,
+            detail="LLM API key not configured. Set LLM_API_KEY or GROQ_API_KEY on Railway.",
+        )
 
     try:
         use_case = get_orchestrator()

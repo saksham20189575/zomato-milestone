@@ -151,6 +151,20 @@ PYTHONPATH=src pytest tests/ -v
 PYTHONPATH=src pytest tests/ -v -m integration
 ```
 
+## Production deploy (Railway + Vercel)
+
+| Service | Platform | Config |
+|---------|----------|--------|
+| **API** | [Railway](https://railway.com) | `railway.toml` + `requirements-api.txt` |
+| **UI** | [Vercel](https://vercel.com) | Root directory `frontend`, `frontend/vercel.json` |
+
+1. Push repo with `data/processed/restaurants.parquet` committed.
+2. **Railway**: deploy from GitHub; set `LLM_API_KEY`, `CORS_ALLOWED_ORIGINS` (include your Vercel URL and `https://*.vercel.app` for previews).
+3. **Vercel**: import repo, set root to `frontend`, set `NEXT_PUBLIC_API_URL` to your Railway HTTPS URL.
+4. Full steps: [`docs/deployment-plan.md`](docs/deployment-plan.md).
+
+Optional Docker deploy on Railway: use root `Dockerfile`.
+
 ## Documentation
 
 See [`docs/`](docs/) for architecture, implementation plan, and edge cases.

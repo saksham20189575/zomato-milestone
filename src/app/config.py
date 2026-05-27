@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -67,6 +68,7 @@ class Settings(BaseSettings):
     llm_temperature: float = 0.3
     llm_max_retries: int = 1
     additional_preferences_max_length: int = 2000
+    cors_allowed_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
 
     @field_validator("data_path", mode="after")
     @classmethod
@@ -94,6 +96,38 @@ class Settings(BaseSettings):
     @property
     def has_llm_api_key(self) -> bool:
         return bool(self.resolved_llm_api_key.strip())
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [o.strip() for o in self.cors_allowed_origins.split(",") if o.strip()]
+
+    @property
+    def cors_exact_origins(self) -> list[str]:
+        """Origins without ``*`` — passed to CORSMiddleware allow_origins."""
+        return [o for o in self.cors_origin_list if "*" not in o]
+
+    @property
+    def cors_origin_regex(self) -> str | None:
+        """
+        Combined regex for wildcard patterns (e.g. ``https://*.vercel.app``).
+        Used as CORSMiddleware allow_origin_regex on Railway + Vercel deploys.
+        """
+        patterns = [o for o in self.cors_origin_list if "*" in o]
+        if not patterns:
+            return None
+        parts = [_wildcard_origin_to_regex(p) for p in patterns]
+        return "|".join(f"(?:{part})" for part in parts)
+
+
+def _wildcard_origin_to_regex(pattern: str) -> str:
+    """Turn ``https://app-*.vercel.app`` into a safe origin regex."""
+    chunks = pattern.split("*")
+    out: list[str] = []
+    for index, chunk in enumerate(chunks):
+        out.append(re.escape(chunk))
+        if index < len(chunks) - 1:
+            out.append(".*")
+    return "".join(out)
 
 
 settings = Settings()

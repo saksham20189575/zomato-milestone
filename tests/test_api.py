@@ -65,7 +65,15 @@ def api_client(tmp_path):
 def test_health(api_client):
     res = api_client.get("/api/v1/health")
     assert res.status_code == 200
-    assert res.json()["status"] == "ok"
+    body = res.json()
+    assert body["status"] == "ok"
+    assert "llm_configured" in body
+
+
+def test_root(api_client):
+    res = api_client.get("/")
+    assert res.status_code == 200
+    assert res.json()["health"] == "/api/v1/health"
 
 
 def test_locations(api_client):

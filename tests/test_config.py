@@ -23,3 +23,22 @@ def test_has_llm_api_key_false_when_unset(monkeypatch):
     monkeypatch.delenv("LLM_API_KEY", raising=False)
     settings = Settings(llm_api_key="")
     assert settings.has_llm_api_key is False
+
+
+def test_cors_splits_exact_and_wildcard_origins():
+    settings = Settings(
+        cors_allowed_origins=(
+            "http://localhost:3000,https://myapp.vercel.app,https://*.vercel.app"
+        )
+    )
+    assert settings.cors_exact_origins == [
+        "http://localhost:3000",
+        "https://myapp.vercel.app",
+    ]
+    assert settings.cors_origin_regex is not None
+    assert r"https://.*\.vercel\.app" in settings.cors_origin_regex
+
+
+def test_cors_origin_regex_none_without_wildcards():
+    settings = Settings(cors_allowed_origins="http://localhost:3000")
+    assert settings.cors_origin_regex is None
