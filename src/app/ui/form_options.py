@@ -1,19 +1,5 @@
-"""Load distinct form options from the restaurant repository."""
+"""Backward-compatible re-export; prefer ``app.data.form_options``."""
 
-from __future__ import annotations
+from app.data.form_options import get_location_options
 
-from pathlib import Path
-
-from app.data.repository import RestaurantRepository, get_repository
-
-
-def get_location_options(
-    repository: RestaurantRepository | None = None,
-    *,
-    data_path: Path | None = None,
-) -> list[str]:
-    """
-    Neighbourhood/area names for the location dropdown (e.g. Indiranagar, Bellandur).
-    """
-    repo = repository or get_repository(data_path)
-    return repo.get_distinct_localities()
+__all__ = ["get_location_options"]

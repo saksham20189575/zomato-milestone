@@ -23,7 +23,7 @@ from app.data.repository import DataStoreError
 from app.models.preferences import UserPreferences
 from app.models.restaurant import BudgetBand
 from app.services.orchestrator import get_orchestrator
-from app.ui.form_options import get_location_options
+from app.data.form_options import get_location_options
 from app.ui.render import render_loading_html, render_results
 from app.ui.theme import inject_theme, render_hero, render_nav
 

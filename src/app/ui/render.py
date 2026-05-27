@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any
 
 from app.models.recommendation import Recommendation, RecommendationResponse
 from app.models.restaurant import BudgetBand
+from app.presentation.metrics import match_percentage
 
 if TYPE_CHECKING:
     import streamlit as st
@@ -28,14 +29,6 @@ def format_cuisines(cuisines: list[str]) -> str:
     if not cuisines:
         return "N/A"
     return ", ".join(cuisines)
-
-
-def match_percentage(rank: int, total: int) -> int:
-    """Display match % decreasing by rank (aligns with Stitch design: 100, 94, 88…)."""
-    if total <= 1:
-        return 100
-    step = 6
-    return max(70, 100 - (rank - 1) * step)
 
 
 def truncate_location(location: str, max_len: int = 22) -> str:

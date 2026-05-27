@@ -4,10 +4,10 @@ from unittest.mock import MagicMock
 
 from app.models.recommendation import Recommendation, RecommendationResponse
 from app.models.restaurant import BudgetBand, Restaurant
+from app.presentation.metrics import match_percentage
 from app.ui.render import (
     format_cost,
     format_cuisines,
-    match_percentage,
     render_recommendation_card_html,
     render_results,
     truncate_location,

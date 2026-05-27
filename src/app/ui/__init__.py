@@ -1,6 +1,5 @@
-"""Presentation layer helpers for the Streamlit UI."""
+"""Streamlit presentation layer.
 
-from app.ui.render import render_results
-from app.ui.theme import inject_theme, render_hero, render_nav
-
-__all__ = ["inject_theme", "render_hero", "render_nav", "render_results"]
+Import submodules directly (e.g. ``from app.ui.theme import inject_theme``).
+Do not eager-import here — the FastAPI backend must not load Streamlit.
+"""

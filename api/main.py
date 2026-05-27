@@ -36,8 +36,8 @@ from app.models.preferences import UserPreferences
 from app.models.recommendation import RecommendationResponse
 from app.models.restaurant import BudgetBand
 from app.services.orchestrator import get_orchestrator
-from app.ui.form_options import get_location_options
-from app.ui.render import match_percentage
+from app.data.form_options import get_location_options
+from app.presentation.metrics import match_percentage
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

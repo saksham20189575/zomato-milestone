@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 
 from app.data.repository import RestaurantRepository
-from app.ui.form_options import get_location_options
+from app.data.form_options import get_location_options
 
 
 def test_get_location_options_from_repository(tmp_path: Path):
