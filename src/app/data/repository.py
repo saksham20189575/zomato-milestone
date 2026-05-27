@@ -4,7 +4,6 @@ from pathlib import Path
 import pandas as pd
 
 from app.config import settings
-from app.ingestion.persistence import read_parquet
 from app.models.restaurant import BudgetBand, Restaurant
 
 logger = logging.getLogger(__name__)
@@ -31,7 +30,7 @@ class RestaurantRepository:
             )
 
         try:
-            df = read_parquet(path)
+            df = pd.read_parquet(path)
         except Exception as e:
             raise DataStoreError(f"Failed to read restaurant data from {path}: {e}") from e
 
