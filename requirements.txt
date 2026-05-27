@@ -1,0 +1,3 @@
+# Default install for Streamlit deploy and app runtime.
+# For ingest, FastAPI, and tests: pip install -r requirements-dev.txt
+-r requirements-streamlit.txt

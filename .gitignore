@@ -1,0 +1,16 @@
+.env
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+data/raw/
+data/processed/*.parquet
+!data/processed/restaurants.parquet
+.streamlit/secrets.toml
+*.egg-info/
+dist/
+build/
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local

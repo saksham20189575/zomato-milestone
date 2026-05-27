@@ -1,0 +1,8 @@
+# Runtime dependencies for Streamlit Community Cloud (see docs/deployment-plan.md).
+pandas>=2.0.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+python-dotenv>=1.0.0
+pyarrow>=14.0.0
+groq>=0.11.0
+streamlit>=1.32.0

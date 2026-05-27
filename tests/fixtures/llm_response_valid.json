@@ -1,0 +1,15 @@
+{
+  "summary": "Top Italian picks in Bangalore within a medium budget.",
+  "recommendations": [
+    {
+      "restaurant_id": "abc123",
+      "rank": 1,
+      "explanation": "Highly rated Italian restaurant in Bangalore matching your medium budget and family-friendly preference."
+    },
+    {
+      "restaurant_id": "def456",
+      "rank": 2,
+      "explanation": "Another strong Italian option in Bangalore with excellent ratings above your minimum."
+    }
+  ]
+}
